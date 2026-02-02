@@ -1,20 +1,19 @@
-import { tasks } from "../data/tasks.store.js";
+import * as repo from "../repositories/tasks.repository.js";
 
-let nextId = 1;
-
-export function getAll() {
-    return tasks;
+export const getAll = async () => {
+    return await repo.findAll();
 }
 
-export function create(title) {
+export const create = async (title) => {
     const task = {
-        id: nextId++,
         title,
         completed: false,
         createdAt: new Date().toISOString(),
     };
 
-    tasks.push(task);
+    return await repo.create(task);
+}
 
-    return task;
+export const getById = async (id) => {
+    return await repo.findById(id);
 }
