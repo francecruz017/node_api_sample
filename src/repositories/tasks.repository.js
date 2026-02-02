@@ -35,7 +35,7 @@ export const create = async (task) => {
     }
 }
 
-export const updateCompleted = async (id, isCompleted = false) => {
+export const updateCompleted = async (id, isCompleted) => {
     return await db.run(
         "UPDATE tasks SET completed = ? WHERE id = ?",
         toDbBoolean(isCompleted),

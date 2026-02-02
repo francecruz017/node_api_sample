@@ -15,5 +15,19 @@ export const create = async (title) => {
 }
 
 export const getById = async (id) => {
-    return await repo.findById(id);
+    const task = await repo.findById(id);
+    if (!task) throw new Error("TASK_NOT_FOUND");
+    return task;
 }
+
+export const remove = async (id) => {
+    const task = await repo.remove(id);
+    if (!task) throw new Error("TASK_NOT_FOUND");
+    return task;
+}
+
+export const updateCompleted = async (id, isCompleted = false) => {
+    const task = await repo.updateCompleted(id, isCompleted);
+    if (!task) throw new Error("TASK_NOT_FOUND");
+    return task;
+} 

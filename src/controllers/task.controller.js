@@ -21,25 +21,27 @@ export const create = async (req, res) => {
 }
 
 export const getById = async (req, res) => {
-    const id = Number(req.params.id);
-
-    if ( Number.isNaN(id) ) {
-        return res
-            .status(400)
-            .json({
-                error: "Invalid task id."
-            });
-    }
-
-    const task = await service.getById(id);
-
-    if (!task) {
-        return res
-            .status(400)
-            .json({
-                error: "Task not found."
-            });
-    }
-
+    const task = await service.getById(req.taskId);
     res.json(task);
+}
+
+export const remove = async (req, res) => {
+    let id = req.taskId;
+
+    const task = await service.remove(id);
+
+    res.json({
+        message: "Task with id " + id + " has been removed.",
+    });
+}
+
+export const updateCompleted = async (req, res) => {
+    let id = req.taskId;
+
+    const task = await service.updateCompleted(req.taskId, true);
+
+    res.json({
+        message: "Task with id " + id + " has been updated.",
+        task
+    });
 }
