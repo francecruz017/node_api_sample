@@ -21,13 +21,21 @@ export const getById = async (id) => {
 }
 
 export const remove = async (id) => {
-    const task = await repo.remove(id);
-    if (!task) throw new Error("TASK_NOT_FOUND");
-    return task;
-}
+  const changes = await repo.remove(id);
 
-export const updateCompleted = async (id, isCompleted = false) => {
-    const task = await repo.updateCompleted(id, isCompleted);
-    if (!task) throw new Error("TASK_NOT_FOUND");
-    return task;
-} 
+  if (changes === 0) {
+    throw new Error("TASK_NOT_FOUND");
+  }
+
+  return true;
+};
+
+export const updateCompleted = async (id, isCompleted = true) => {
+  const changes = await repo.updateCompleted(id, isCompleted);
+
+  if (changes === 0) {
+    throw new Error("TASK_NOT_FOUND");
+  }
+
+  return await repo.findById(id);
+};

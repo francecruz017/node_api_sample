@@ -17,7 +17,7 @@ export const create = async (req, res) => {
     }
 
     const task = await service.create(title);
-    res.status(201).json({task});
+    res.status(201).json(task);
 }
 
 export const getById = async (req, res) => {
@@ -26,22 +26,11 @@ export const getById = async (req, res) => {
 }
 
 export const remove = async (req, res) => {
-    let id = req.taskId;
-
-    const task = await service.remove(id);
-
-    res.json({
-        message: "Task with id " + id + " has been removed.",
-    });
-}
+  await service.remove(req.taskId);
+  res.sendStatus(204);
+};
 
 export const updateCompleted = async (req, res) => {
-    let id = req.taskId;
-
-    const task = await service.updateCompleted(req.taskId, true);
-
-    res.json({
-        message: "Task with id " + id + " has been updated.",
-        task
-    });
-}
+  const task = await service.updateCompleted(req.taskId, true);
+  res.json(task);
+};

@@ -36,18 +36,22 @@ export const create = async (task) => {
 }
 
 export const updateCompleted = async (id, isCompleted) => {
-    return await db.run(
-        "UPDATE tasks SET completed = ? WHERE id = ?",
-        toDbBoolean(isCompleted),
-        id,
-    );
-}
+  const result = await db.run(
+    "UPDATE tasks SET completed = ? WHERE id = ?",
+    toDbBoolean(isCompleted),
+    id
+  );
+
+  return result.changes;
+};
 
 export const remove = async (id) => {
-    return await db.run(
+    const result = await db.run(
         "DELETE FROM tasks WHERE id = ?",
         id,
     );
+
+    return result.changes;
 }
 
 const mapRowToTask = (row) => {
