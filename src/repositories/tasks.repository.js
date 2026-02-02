@@ -1,14 +1,21 @@
 import { db } from "../db/index.js";
 
+const toDbBoolean = (value) => (value ? 1 : 0);
+const fromDbBoolean = (value) => Boolean(value);
+
 export const findAll = async () => {
-    return await db.all("SELECT * FROM tasks");
+    const rows = await db.all("SELECT * FROM tasks");
+
+    return rows.map(mapRowToTask);
 }
 
 export const findById = async (id) => {
-    return await db.get(
+    const row = await db.get(
         "SELECT * FROM tasks WHERE id = ?",
         id
     );
+
+    return mapRowToTask(row);
 }
 
 export const create = async (task) => {
@@ -16,7 +23,7 @@ export const create = async (task) => {
         `INSERT INTO tasks (title, completed, created_at)
         VALUES (?, ?, ?);`,
         task.title,
-        task.completed,
+        toDbBoolean(task.completed),
         task.createdAt
     );
 
@@ -24,6 +31,32 @@ export const create = async (task) => {
         id: result.lastID,
         title: task.title,
         completed: task.completed,
-        create_at: task.createAt
+        createdAt: task.createdAt
     }
 }
+
+export const updateCompleted = async (id, isCompleted = false) => {
+    return await db.run(
+        "UPDATE tasks SET completed = ? WHERE id = ?",
+        toDbBoolean(isCompleted),
+        id,
+    );
+}
+
+export const remove = async (id) => {
+    return await db.run(
+        "DELETE FROM tasks WHERE id = ?",
+        id,
+    );
+}
+
+const mapRowToTask = (row) => {
+  if (!row) return null;
+
+  return {
+    id: row.id,
+    title: row.title,
+    completed: fromDbBoolean(row.completed),
+    createdAt: row.created_at
+  };
+};
