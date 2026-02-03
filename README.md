@@ -1,12 +1,31 @@
 # Node Task API
 
-A simple REST API built with **Node.js**, **Express**, and **SQLite**.
+A clean REST API built with **Node.js**, **Express**, and **SQLite**, designed to demonstrate real‑world backend structure and authentication patterns.
 
-This project is a small backend example showing:
-- CRUD operations
-- Clean separation of layers (controllers, services, repositories)
+This project intentionally avoids ORMs and heavy abstractions to show how things work under the hood.
+
+---
+
+## Features
+
+- Layered architecture (controllers → services → repositories → db)
+- JWT‑based authentication
+- Password hashing with bcrypt
+- SQLite persistence (raw SQL)
+- Centralized error handling
 - Proper HTTP status codes
-- SQLite persistence
+- ES Modules setup
+
+---
+
+## Tech Stack
+
+- Node.js (v18+)
+- Express
+- SQLite
+- bcrypt
+- jsonwebtoken
+- dotenv
 
 ---
 
@@ -34,7 +53,17 @@ npm install
 
 ---
 
-## Run the server
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+JWT_SECRET=your_secret_here
+```
+
+---
+
+## Run the Server
 
 Start the API:
 
@@ -42,7 +71,7 @@ Start the API:
 node src/server.js
 ```
 
-Server will run at:
+Server runs at:
 
 ```
 http://localhost:3000
@@ -50,9 +79,61 @@ http://localhost:3000
 
 ---
 
-## API Endpoints
+## Authentication
 
-### Create a task
+### Register
+
+```
+POST /auth/register
+```
+
+Body:
+```json
+{
+  "email": "test@test.com",
+  "password": "123456"
+}
+```
+
+---
+
+### Login
+
+```
+POST /auth/login
+```
+
+Body:
+```json
+{
+  "email": "test@test.com",
+  "password": "123456"
+}
+```
+
+Response:
+```json
+{
+  "token": "<jwt_token>"
+}
+```
+
+Use the token as a Bearer token for protected routes.
+
+---
+
+## Tasks API (Protected)
+
+All task endpoints require:
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+---
+
+### Create a Task
+
 ```
 POST /tasks
 ```
@@ -66,42 +147,74 @@ Body:
 
 ---
 
-### Get all tasks
+### Get All Tasks
+
 ```
 GET /tasks
 ```
 
 ---
 
-### Get task by ID
+### Get Task by ID
+
 ```
 GET /tasks/:id
 ```
 
 ---
 
-### Mark task as completed
+### Mark Task as Completed
+
 ```
 PATCH /tasks/:id/complete
 ```
 
 ---
 
-### Delete a task
+### Delete a Task
+
 ```
 DELETE /tasks/:id
 ```
 
-Returns:
+Response:
 ```
 204 No Content
 ```
 
 ---
 
-## Notes
+## Project Structure
 
-- Data is stored in a local SQLite database file
-- No authentication
-- No ORM (raw SQL)
-- Designed for learning and demonstration purposes
+```
+src/
+ ├── controllers
+ ├── services
+ ├── repositories
+ ├── middlewares
+ ├── routes
+ ├── db
+ └── server.js
+```
+
+---
+
+## Design Notes
+
+- Controllers handle HTTP only
+- Services contain business logic
+- Repositories handle database access
+- JWT authentication is enforced via middleware
+- No ORM by design
+
+---
+
+## Purpose
+
+This project is built for:
+
+- Learning backend architecture
+- Interview preparation
+- Demonstrating clean Node.js API design
+
+It is intentionally simple, explicit, and production‑oriented.

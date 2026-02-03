@@ -14,3 +14,12 @@ await db.exec(`
     created_at TEXT NOT NULL
   )
 `);
+
+await db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )
+`);
